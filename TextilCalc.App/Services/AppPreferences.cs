@@ -9,6 +9,7 @@ public sealed class AppPreferences : IAppPreferences
     private const string MetrajeKey = "metraje_state";
     private const string CalculadoraKey = "calculadora_state";
     private const string NavigationTutorialKey = "tutorial_navigation_shown";
+    private const string ThemePreferenceKey = "theme_preference";
 
     public GramaturaSavedState LoadGramatura() =>
         Load(GramaturaKey, new GramaturaSavedState(string.Empty, string.Empty, string.Empty, null, null, null));
@@ -34,6 +35,12 @@ public sealed class AppPreferences : IAppPreferences
 
     public void MarkNavigationTutorialAsSeen() =>
         Preferences.Default.Set(NavigationTutorialKey, true);
+
+    public string GetThemePreference() =>
+        Preferences.Default.Get(ThemePreferenceKey, "System");
+
+    public void SetThemePreference(string theme) =>
+        Preferences.Default.Set(ThemePreferenceKey, string.IsNullOrWhiteSpace(theme) ? "System" : theme);
 
     private static T Load<T>(string key, T fallback)
     {

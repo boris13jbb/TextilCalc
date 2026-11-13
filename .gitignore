@@ -38,7 +38,7 @@ _ReSharper*/
 Thumbs.db
 desktop.ini
 
-## Publish / packages
+## Publish / packages / installers (never commit binaries)
 *.nupkg
 *.snupkg
 publish/
@@ -49,13 +49,31 @@ _pkginfo.txt
 *.appx
 *.appxbundle
 *.appxupload
+*.exe
+*.msi
+*.msix
+*.apk
+*.aab
+*.dll
+!installer/**/*.iss
 
-## Android / keys (never commit secrets)
+## Android / keys / code signing (never commit secrets)
 *.keystore
 *.jks
 *.p12
 *.pfx
+*.snk
+*.cer
+*.p7b
+*.pem
+*.key
 android_debug_keystore.flag
+**/signing/
+.env
+.env.*
+!.env.example
+**/secrets/
+**/Secrets/
 
 ## Local / tooling
 *.log
@@ -66,3 +84,4 @@ coverage/
 *.coverage
 *.coveragexml
 .cursor/
+DOCUMENTACION/capturas/_*.xml

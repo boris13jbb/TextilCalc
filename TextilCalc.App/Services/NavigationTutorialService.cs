@@ -14,11 +14,10 @@ public sealed class NavigationTutorialService(IAppPreferences preferences, IUser
         _checkedThisSession = true;
         var steps = new[]
         {
-            ("¡Bienvenido a TextilCalc!", "Desde el menú puede acceder a todas las herramientas textiles."),
-            ("Calcular gramatura", "GSM = (Peso × 1000) / (Metraje × Ancho)."),
-            ("Calcular metraje", "Metraje = (Peso × 1000) / (Gramatura × Ancho)."),
-            ("Gestión de telas", "Puede administrar el catálogo y respaldarlo mediante archivos Excel."),
-            ("Calculadora", "Incluye modos básico y científico, memoria y unidades angulares.")
+            ("¡Bienvenido a TextilCalc!", "Desde el inicio puede acceder a gramatura, metraje y la calculadora científica."),
+            ("Calcular gramatura", "GSM = (Peso × 1000) / (Metraje × Ancho). Ingrese los valores manualmente."),
+            ("Calcular metraje", "Metraje = (Peso × 1000) / (Gramatura × Ancho). Ingrese peso, GSM y ancho."),
+            ("Calculadora", "Incluye modo científico, memoria, historial y unidades DEG/RAD/GRAD.")
         };
 
         foreach (var (title, message) in steps)

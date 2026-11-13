@@ -14,4 +14,6 @@ public interface IAppPreferences
     void SaveCalculadora(CalculadoraSavedState state);
     bool HasSeenNavigationTutorial();
     void MarkNavigationTutorialAsSeen();
+    string GetThemePreference();
+    void SetThemePreference(string theme);
 }

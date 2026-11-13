@@ -9,6 +9,7 @@ namespace TextilCalc.App.ViewModels;
 public partial class MetrajeViewModel : ObservableObject
 {
     private readonly IAppPreferences _preferences;
+    private bool _isInitializing = true;
 
     [ObservableProperty] public partial string WeightText { get; set; } = string.Empty;
     [ObservableProperty] public partial string GsmText { get; set; } = string.Empty;
@@ -26,17 +27,18 @@ public partial class MetrajeViewModel : ObservableObject
         WidthText = saved.WidthText;
         Metraje = saved.Metraje;
         AreaM2 = saved.AreaM2;
+        _isInitializing = false;
     }
 
     public bool HasResult => Metraje.HasValue;
     public bool HasNoResult => !HasResult;
     public bool HasError => !string.IsNullOrWhiteSpace(Error);
+    /// <summary>Presentación del metraje con 2 decimales. El área se calcula internamente pero no se muestra.</summary>
     public string MetrajeDisplay => Metraje?.ToString("N2") ?? "--";
-    public string AreaDisplay => AreaM2?.ToString("N2") ?? "--";
 
-    partial void OnWeightTextChanged(string value) => Save();
-    partial void OnGsmTextChanged(string value) => Save();
-    partial void OnWidthTextChanged(string value) => Save();
+    partial void OnWeightTextChanged(string value) => InvalidateAndSave();
+    partial void OnGsmTextChanged(string value) => InvalidateAndSave();
+    partial void OnWidthTextChanged(string value) => InvalidateAndSave();
     partial void OnErrorChanged(string? value) => OnPropertyChanged(nameof(HasError));
 
     [RelayCommand]
@@ -44,18 +46,21 @@ public partial class MetrajeViewModel : ObservableObject
     {
         if (!LocalizedNumberParser.TryParse(WeightText, out var weight) || weight <= 0)
         {
+            ClearComputedResults();
             Error = "Ingrese un peso válido (> 0).";
             return;
         }
 
         if (!LocalizedNumberParser.TryParse(GsmText, out var gsm) || gsm <= 0)
         {
+            ClearComputedResults();
             Error = "Ingrese una gramatura válida (> 0).";
             return;
         }
 
         if (!LocalizedNumberParser.TryParse(WidthText, out var width) || width <= 0)
         {
+            ClearComputedResults();
             Error = "Ingrese un ancho válido (> 0).";
             return;
         }
@@ -90,11 +95,37 @@ public partial class MetrajeViewModel : ObservableObject
     private void Save() =>
         _preferences.SaveMetraje(new MetrajeSavedState(WeightText, GsmText, WidthText, Metraje, AreaM2));
 
+    /// <summary>
+    /// Al editar entradas se invalidan resultados previos para no mostrar valores obsoletos.
+    /// </summary>
+    private void InvalidateAndSave()
+    {
+        if (_isInitializing)
+        {
+            return;
+        }
+
+        ClearComputedResults();
+        Error = null;
+        Save();
+    }
+
+    private void ClearComputedResults()
+    {
+        if (Metraje is null && AreaM2 is null)
+        {
+            return;
+        }
+
+        Metraje = null;
+        AreaM2 = null;
+        NotifyResults();
+    }
+
     private void NotifyResults()
     {
         OnPropertyChanged(nameof(HasResult));
         OnPropertyChanged(nameof(HasNoResult));
         OnPropertyChanged(nameof(MetrajeDisplay));
-        OnPropertyChanged(nameof(AreaDisplay));
     }
 }

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="TextilCalc.App/TextilCalc.App.csproj" />
+  <Project Path="TextilCalc.Core.Tests/TextilCalc.Core.Tests.csproj" />
+  <Project Path="TextilCalc.Core/TextilCalc.Core.csproj" />
+</Solution>

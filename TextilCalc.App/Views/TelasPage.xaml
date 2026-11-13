@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TextilCalc.App.Views.TelasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:TextilCalc.App.Models"
+    xmlns:vm="clr-namespace:TextilCalc.App.ViewModels"
+    x:DataType="vm:TelasViewModel"
+    Title="Gestión de telas"
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="TextilPrimary">#5B21B6</Color>
+            <Color x:Key="TextilPrimarySoft">#F3E8FF</Color>
+            <Color x:Key="TextilSuccess">#047857</Color>
+            <Color x:Key="TextilSuccessSoft">#ECFDF5</Color>
+            <Color x:Key="TextilDanger">#B42318</Color>
+            <Color x:Key="TextilDangerSoft">#FEF3F2</Color>
+            <Color x:Key="TextilText">#172033</Color>
+            <Color x:Key="TextilMuted">#64748B</Color>
+            <Color x:Key="TextilBorder">#E2E8F0</Color>
+            <Color x:Key="TextilSurface">#FFFFFF</Color>
+            <Color x:Key="TextilSurfaceDark">#111827</Color>
+            <Color x:Key="TextilBorderDark">#334155</Color>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView HorizontalOptions="Fill">
+        <Grid
+            Padding="{OnIdiom Phone='16,18,16,38', Tablet='26,24,26,42', Desktop='38,28,38,46'}"
+            RowDefinitions="Auto,Auto,Auto,Auto"
+            RowSpacing="18"
+            MaximumWidthRequest="1500"
+            HorizontalOptions="Fill">
+
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <VerticalStackLayout Spacing="4" VerticalOptions="Center">
+                    <Label
+                        Text="Gestión de telas"
+                        Style="{StaticResource PageTitle}" />
+                    <Label
+                        Text="Administra, consulta y calcula el metraje de tus telas."
+                        FontSize="14"
+                        TextColor="{AppThemeBinding Light={StaticResource TextilMuted}, Dark=#94A3B8}" />
+                </VerticalStackLayout>
+
+                <Button
+                    Grid.Column="1"
+                    Text="{OnIdiom Phone='+', Tablet='+ Nueva tela', Desktop='+ Nueva tela'}"
+                    Command="{Binding ShowAddFormCommand}"
+                    Style="{StaticResource PrimaryAction}"
+                    MinimumWidthRequest="{OnIdiom Phone=50, Tablet=132, Desktop=142}"
+                    VerticalOptions="Center"
+                    SemanticProperties.Description="Agregar una nueva tela" />
+            </Grid>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Border Style="{StaticResource TextilInput}">
+                    <SearchBar
+                        Placeholder="Buscar tela por nombre"
+                        Text="{Binding SearchQuery}"
+                        BackgroundColor="Transparent"
+                        CancelButtonColor="{StaticResource TextilMuted}"
+                        HeightRequest="46"
+                        SemanticProperties.Hint="Filtra el catálogo por nombre" />
+                </Border>
+
+                <Border
+                    Grid.Column="1"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource TextilPrimarySoft}, Dark=#2E1065}"
+                    Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#6D28D9}"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="{OnIdiom Phone='10,0', Tablet='16,0', Desktop='18,0'}"
+                    MinimumHeightRequest="48">
+                    <Label
+                        Text="{Binding Telas.Count, StringFormat='{}{0} telas'}"
+                        TextColor="{AppThemeBinding Light={StaticResource TextilPrimary}, Dark=#D8B4FE}"
+                        FontAttributes="Bold"
+                        VerticalTextAlignment="Center" />
+                </Border>
+            </Grid>
+
+            <VerticalStackLayout Grid.Row="2" Spacing="10">
+                <Border
+                    IsVisible="{Binding HasError}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource TextilDangerSoft}, Dark=#3B1114}"
+                    Stroke="#FECACA"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="14,12">
+                    <Label
+                        Text="{Binding Error}"
+                        TextColor="{StaticResource TextilDanger}"
+                        FontAttributes="Bold" />
+                </Border>
+
+                <Border
+                    IsVisible="{Binding HasSuccess}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource TextilSuccessSoft}, Dark=#052E2B}"
+                    Stroke="#A7F3D0"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="14,12">
+                    <Label
+                        Text="{Binding SuccessMessage}"
+                        TextColor="{AppThemeBinding Light={StaticResource TextilSuccess}, Dark=#6EE7B7}"
+                        FontAttributes="Bold" />
+                </Border>
+
+                <ActivityIndicator
+                    IsRunning="{Binding IsBusy}"
+                    IsVisible="{Binding IsBusy}"
+                    Color="{StaticResource TextilPrimary}" />
+
+                <Border
+                    IsVisible="{Binding IsFormVisible}"
+                    Style="{StaticResource TextilCard}"
+                    MaximumWidthRequest="760"
+                    HorizontalOptions="Fill">
+                    <VerticalStackLayout Spacing="14">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Spacing="3">
+                                <Label
+                                    Text="{Binding FormTitle}"
+                                    Style="{StaticResource SectionTitle}" />
+                                <Label
+                                    Text="Completa los datos técnicos de la tela."
+                                    Style="{StaticResource MutedText}" />
+                            </VerticalStackLayout>
+                            <Button
+                                Grid.Column="1"
+                                Text="Cancelar"
+                                Command="{Binding CancelFormCommand}"
+                                Style="{StaticResource SecondaryAction}"
+                                VerticalOptions="Center" />
+                        </Grid>
+
+                        <Grid
+                            ColumnDefinitions="{OnIdiom Phone='*', Tablet='2*,*,*', Desktop='2*,*,*'}"
+                            RowDefinitions="{OnIdiom Phone='Auto,Auto,Auto', Tablet='Auto', Desktop='Auto'}"
+                            ColumnSpacing="12"
+                            RowSpacing="12">
+                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="6">
+                                <Label Text="Nombre" FontAttributes="Bold" />
+                                <Border Style="{StaticResource TextilInput}">
+                                    <Entry
+                                        Text="{Binding FormNombre}"
+                                        Placeholder="Nombre de la tela"
+                                        ReturnType="Next" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout
+                                Grid.Row="{OnIdiom Phone=1, Tablet=0, Desktop=0}"
+                                Grid.Column="{OnIdiom Phone=0, Tablet=1, Desktop=1}"
+                                Spacing="6">
+                                <Label Text="Gramatura (g/m²)" FontAttributes="Bold" />
+                                <Border Style="{StaticResource TextilInput}">
+                                    <Entry
+                                        Text="{Binding FormGramatura}"
+                                        Placeholder="Ej. 330"
+                                        Keyboard="Numeric"
+                                        ReturnType="Next" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout
+                                Grid.Row="{OnIdiom Phone=2, Tablet=0, Desktop=0}"
+                                Grid.Column="{OnIdiom Phone=0, Tablet=2, Desktop=2}"
+                                Spacing="6">
+                                <Label Text="Ancho (m), opcional" FontAttributes="Bold" />
+                                <Border Style="{StaticResource TextilInput}">
+                                    <Entry
+                                        Text="{Binding FormAncho}"
+                                        Placeholder="Ej. 1,54"
+                                        Keyboard="Numeric"
+                                        ReturnType="Done" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Button
+                            Text="Guardar tela"
+                            Command="{Binding SaveTelaCommand}"
+                            Style="{StaticResource PrimaryAction}"
+                            HorizontalOptions="End"
+                            MinimumWidthRequest="170" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <Grid
+                x:Name="Workspace"
+                Grid.Row="3"
+                ColumnDefinitions="*"
+                RowDefinitions="Auto,Auto"
+                ColumnSpacing="18"
+                RowSpacing="18">
+
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="ResponsiveStates">
+                        <VisualState x:Name="Narrow">
+                            <VisualState.StateTriggers>
+                                <AdaptiveTrigger MinWindowWidth="0" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter TargetName="Workspace" Property="ColumnDefinitions" Value="*" />
+                                <Setter TargetName="Workspace" Property="RowDefinitions" Value="Auto,Auto" />
+                                <Setter TargetName="CatalogCard" Property="Grid.Row" Value="0" />
+                                <Setter TargetName="CatalogCard" Property="Grid.Column" Value="0" />
+                                <Setter TargetName="SidePanel" Property="Grid.Row" Value="1" />
+                                <Setter TargetName="SidePanel" Property="Grid.Column" Value="0" />
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="Wide">
+                            <VisualState.StateTriggers>
+                                <AdaptiveTrigger MinWindowWidth="1000" />
+                            </VisualState.StateTriggers>
+                            <VisualState.Setters>
+                                <Setter TargetName="Workspace" Property="ColumnDefinitions" Value="3*,2*" />
+                                <Setter TargetName="Workspace" Property="RowDefinitions" Value="Auto" />
+                                <Setter TargetName="CatalogCard" Property="Grid.Row" Value="0" />
+                                <Setter TargetName="CatalogCard" Property="Grid.Column" Value="0" />
+                                <Setter TargetName="SidePanel" Property="Grid.Row" Value="0" />
+                                <Setter TargetName="SidePanel" Property="Grid.Column" Value="1" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+
+                <Border
+                    x:Name="CatalogCard"
+                    Style="{StaticResource TextilCard}">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="14">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <VerticalStackLayout Spacing="3">
+                                <Label
+                                    Text="Catálogo de telas"
+                                    Style="{StaticResource SectionTitle}" />
+                                <Label
+                                    Text="Selecciona una tela para editarla o calcular su metraje."
+                                    Style="{StaticResource MutedText}" />
+                            </VerticalStackLayout>
+
+                            <Border
+                                Grid.Column="1"
+                                BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#1E293B}"
+                                Stroke="{AppThemeBinding Light={StaticResource TextilBorder}, Dark={StaticResource TextilBorderDark}}"
+                                StrokeShape="RoundRectangle 10"
+                                Padding="12,7"
+                                VerticalOptions="Center">
+                                <Label
+                                    Text="Nombre · Gramatura · Ancho"
+                                    Style="{StaticResource MutedText}"
+                                    IsVisible="{OnIdiom Phone=False, Tablet=True, Desktop=True}" />
+                            </Border>
+                        </Grid>
+
+                        <CollectionView
+                            Grid.Row="1"
+                            ItemsSource="{Binding Telas}"
+                            SelectedItem="{Binding SelectedTela}"
+                            SelectionMode="Single"
+                            HeightRequest="{OnIdiom Phone=390, Tablet=520, Desktop=570}">
+                            <CollectionView.EmptyView>
+                                <VerticalStackLayout
+                                    Padding="20,38"
+                                    Spacing="10"
+                                    HorizontalOptions="Center">
+                                    <Label
+                                        Text="Catálogo vacío"
+                                        Style="{StaticResource SectionTitle}"
+                                        HorizontalTextAlignment="Center" />
+                                    <Label
+                                        Text="Agrega una tela o importa un archivo Excel para comenzar."
+                                        Style="{StaticResource MutedText}"
+                                        HorizontalTextAlignment="Center" />
+                                    <Button
+                                        Margin="0,6,0,0"
+                                        Text="Agregar primera tela"
+                                        Command="{Binding ShowAddFormCommand}"
+                                        Style="{StaticResource PrimaryAction}" />
+                                </VerticalStackLayout>
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+                            </CollectionView.ItemsLayout>
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Tela">
+                                    <Border
+                                        Padding="{OnIdiom Phone='10,11', Tablet='12,11', Desktop='14,12'}"
+                                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#111827}"
+                                        Stroke="{AppThemeBinding Light={StaticResource TextilBorder}, Dark={StaticResource TextilBorderDark}}"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12">
+
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal" />
+                                                <VisualState x:Name="Selected">
+                                                    <VisualState.Setters>
+                                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource TextilPrimarySoft}, Dark=#2E1065}" />
+                                                        <Setter Property="Stroke" Value="{StaticResource TextilPrimary}" />
+                                                        <Setter Property="StrokeThickness" Value="2" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+
+                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="{OnIdiom Phone=8, Tablet=10, Desktop=12}">
+                                            <Border
+                                                WidthRequest="{OnIdiom Phone=38, Tablet=42, Desktop=44}"
+                                                HeightRequest="{OnIdiom Phone=38, Tablet=42, Desktop=44}"
+                                                BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                                                Stroke="Transparent"
+                                                StrokeShape="RoundRectangle 10"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    Text="T"
+                                                    TextColor="{AppThemeBinding Light={StaticResource TextilPrimary}, Dark=#C4B5FD}"
+                                                    FontAttributes="Bold"
+                                                    FontSize="16"
+                                                    HorizontalTextAlignment="Center"
+                                                    VerticalTextAlignment="Center" />
+                                            </Border>
+
+                                            <VerticalStackLayout
+                                                Grid.Column="1"
+                                                Spacing="3"
+                                                VerticalOptions="Center">
+                                                <Label
+                                                    Text="{Binding Nombre}"
+                                                    FontAttributes="Bold"
+                                                    FontSize="{OnIdiom Phone=14, Tablet=15, Desktop=15}"
+                                                    TextColor="{AppThemeBinding Light={StaticResource TextilText}, Dark=White}"
+                                                    LineBreakMode="TailTruncation" />
+                                                <Label
+                                                    Style="{StaticResource MutedText}"
+                                                    LineBreakMode="TailTruncation">
+                                                    <Label.FormattedText>
+                                                        <FormattedString>
+                                                            <Span Text="Gramatura " />
+                                                            <Span Text="{Binding Gramatura, StringFormat='{0:0.##}'}" FontAttributes="Bold" />
+                                                            <Span Text=" g/m²   ·   Ancho " />
+                                                            <Span Text="{Binding Ancho, StringFormat='{0:0.##}'}" FontAttributes="Bold" />
+                                                            <Span Text=" m" />
+                                                        </FormattedString>
+                                                    </Label.FormattedText>
+                                                </Label>
+                                            </VerticalStackLayout>
+
+                                            <Button
+                                                Grid.Column="2"
+                                                Text="{OnIdiom Phone='✎', Tablet='Editar', Desktop='Editar'}"
+                                                Command="{Binding ShowEditFormCommand, Source={RelativeSource AncestorType={x:Type vm:TelasViewModel}}, x:DataType=vm:TelasViewModel}"
+                                                CommandParameter="{Binding .}"
+                                                Style="{StaticResource CompactSecondaryAction}"
+                                                SemanticProperties.Description="Editar tela" />
+
+                                            <Button
+                                                Grid.Column="3"
+                                                Text="{OnIdiom Phone='×', Tablet='Eliminar', Desktop='Eliminar'}"
+                                                Command="{Binding DeleteTelaCommand, Source={RelativeSource AncestorType={x:Type vm:TelasViewModel}}, x:DataType=vm:TelasViewModel}"
+                                                CommandParameter="{Binding .}"
+                                                Style="{StaticResource DangerAction}"
+                                                SemanticProperties.Description="Eliminar tela" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <Label
+                                Text="{Binding Telas.Count, StringFormat='{}{0} telas encontradas'}"
+                                Style="{StaticResource MutedText}"
+                                VerticalTextAlignment="Center" />
+                            <Label
+                                Grid.Column="1"
+                                Text="Haz clic en una fila para seleccionarla"
+                                Style="{StaticResource MutedText}"
+                                IsVisible="{OnIdiom Phone=False, Tablet=True, Desktop=True}"
+                                VerticalTextAlignment="Center" />
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <VerticalStackLayout
+                    x:Name="SidePanel"
+                    Grid.Row="1"
+                    Spacing="18">
+
+                    <Border Style="{StaticResource TextilCard}">
+                        <VerticalStackLayout Spacing="16">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Border
+                                    WidthRequest="42"
+                                    HeightRequest="42"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource TextilPrimarySoft}, Dark=#2E1065}"
+                                    Stroke="Transparent"
+                                    StrokeShape="RoundRectangle 11">
+                                    <Label
+                                        Text="∑"
+                                        FontSize="20"
+                                        FontAttributes="Bold"
+                                        TextColor="{AppThemeBinding Light={StaticResource TextilPrimary}, Dark=#D8B4FE}"
+                                        HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center" />
+                                </Border>
+
+                                <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                    <Label
+                                        Text="Calculadora de metraje"
+                                        Style="{StaticResource SectionTitle}" />
+                                    <Label
+                                        Text="Calcula el metraje usando el peso, la gramatura y el ancho."
+                                        Style="{StaticResource MutedText}" />
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <Border
+                                IsVisible="{Binding HasSelection}"
+                                BackgroundColor="{AppThemeBinding Light=#FAF5FF, Dark=#2E1065}"
+                                Stroke="{AppThemeBinding Light=#DDD6FE, Dark=#6D28D9}"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="16">
+                                <VerticalStackLayout Spacing="10">
+                                    <Label
+                                        Text="TELA SELECCIONADA"
+                                        FontSize="11"
+                                        FontAttributes="Bold"
+                                        CharacterSpacing="1.2"
+                                        TextColor="{AppThemeBinding Light={StaticResource TextilMuted}, Dark=#C4B5FD}" />
+                                    <Label
+                                        Text="{Binding SelectedTela.Nombre}"
+                                        FontSize="20"
+                                        FontAttributes="Bold"
+                                        TextColor="{AppThemeBinding Light={StaticResource TextilPrimary}, Dark=#E9D5FF}"
+                                        LineBreakMode="TailTruncation" />
+
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                        <Border
+                                            BackgroundColor="{AppThemeBinding Light=White, Dark=#111827}"
+                                            Stroke="{AppThemeBinding Light={StaticResource TextilBorder}, Dark={StaticResource TextilBorderDark}}"
+                                            StrokeShape="RoundRectangle 11"
+                                            Padding="12">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="Gramatura" Style="{StaticResource MutedText}" />
+                                                <Label
+                                                    Text="{Binding SelectedTela.Gramatura, StringFormat='{0:0.##} g/m²'}"
+                                                    FontAttributes="Bold"
+                                                    FontSize="15" />
+                                            </VerticalStackLayout>
+                                        </Border>
+
+                                        <Border
+                                            Grid.Column="1"
+                                            BackgroundColor="{AppThemeBinding Light=White, Dark=#111827}"
+                                            Stroke="{AppThemeBinding Light={StaticResource TextilBorder}, Dark={StaticResource TextilBorderDark}}"
+                                            StrokeShape="RoundRectangle 11"
+                                            Padding="12">
+                                            <VerticalStackLayout Spacing="2">
+                                                <Label Text="Ancho" Style="{StaticResource MutedText}" />
+                                                <Label
+                                                    Text="{Binding SelectedTela.Ancho, StringFormat='{0:0.##} m'}"
+                                                    FontAttributes="Bold"
+                                                    FontSize="15" />
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <Border
+                                IsVisible="{Binding HasNoSelection}"
+                                BackgroundColor="{AppThemeBinding Light=#F8FAFC, Dark=#1E293B}"
+                                Stroke="{AppThemeBinding Light={StaticResource TextilBorder}, Dark={StaticResource TextilBorderDark}}"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="18">
+                                <VerticalStackLayout Spacing="5">
+                                    <Label
+                                        Text="Selecciona una tela"
+                                        FontAttributes="Bold"
+                                        HorizontalTextAlignment="Center" />
+                                    <Label
+                                        Text="Elige una fila del catálogo para habilitar el cálculo."
+                                        Style="{StaticResource MutedText}"
+                                        HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <VerticalStackLayout
+                                IsVisible="{Binding HasSelection}"
+                                Spacing="7">
+                                <Label
+                                    Text="Peso de balanza (kg)"
+                                    FontAttributes="Bold" />
+                                <Border Style="{StaticResource TextilInput}">
+                                    <Entry
+                                        Text="{Binding PesoBalanza}"
+                                        Keyboard="Numeric"
+                                        Placeholder="Ej. 45"
+                                        ReturnType="Done" />
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <Button
+                                IsVisible="{Binding HasSelection}"
+                                Text="Calcular metraje"
+                                Command="{Binding CalculateMetrajeCommand}"
+                                Style="{StaticResource PrimaryAction}"
+                                HorizontalOptions="Fill" />
+
+                            <Border
+                                IsVisible="{Binding HasCalculatedMetraje}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource TextilSuccessSoft}, Dark=#052E2B}"
+                                Stroke="#A7F3D0"
+                                StrokeShape="RoundRectangle 14"
+                                Padding="16">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                    <Border
+                                        WidthRequest="38"
+                                        HeightRequest="38"
+                                        BackgroundColor="#D1FAE5"
+                                        Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 19">
+                                        <Label
+                                            Text="✓"
+                                            TextColor="{StaticResource TextilSuccess}"
+                                            FontSize="20"
+                                            FontAttributes="Bold"
+                                            HorizontalTextAlignment="Center"
+                                            VerticalTextAlignment="Center" />
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="1" VerticalOptions="Center">
+                                        <Label
+                                            Text="Metraje calculado"
+                                            Style="{StaticResource MutedText}" />
+                                        <Label
+                                            Text="{Binding MetrajeDisplay, StringFormat='{}{0} metros'}"
+                                            FontSize="23"
+                                            FontAttributes="Bold"
+                                            TextColor="{AppThemeBinding Light={StaticResource TextilSuccess}, Dark=#6EE7B7}" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Style="{StaticResource TextilCard}">
+                        <VerticalStackLayout Spacing="14">
+                            <VerticalStackLayout Spacing="3">
+                                <Label
+                                    Text="Gestión de datos"
+                                    Style="{StaticResource SectionTitle}" />
+                                <Label
+                                    Text="Importa o exporta tu catálogo en formato Excel."
+                                    Style="{StaticResource MutedText}" />
+                            </VerticalStackLayout>
+
+                            <Grid
+                                ColumnDefinitions="{OnIdiom Phone='*', Tablet='*,*', Desktop='*,*'}"
+                                RowDefinitions="{OnIdiom Phone='Auto,Auto', Tablet='Auto', Desktop='Auto'}"
+                                ColumnSpacing="10"
+                                RowSpacing="10">
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Text="Exportar Excel"
+                                    Command="{Binding ExportCommand}"
+                                    IsEnabled="{Binding IsNotBusy}"
+                                    Style="{StaticResource SecondaryAction}" />
+
+                                <Button
+                                    Grid.Row="{OnIdiom Phone=1, Tablet=0, Desktop=0}"
+                                    Grid.Column="{OnIdiom Phone=0, Tablet=1, Desktop=1}"
+                                    Text="Importar Excel"
+                                    Command="{Binding ImportCommand}"
+                                    IsEnabled="{Binding IsNotBusy}"
+                                    Style="{StaticResource PrimaryAction}" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button
+                            Text="Volver"
+                            Command="{Binding GoBackCommand}"
+                            Style="{StaticResource SecondaryAction}" />
+                        <Button
+                            Grid.Column="1"
+                            Text="Abrir calculadora"
+                            Command="{Binding OpenCalculatorCommand}"
+                            Style="{StaticResource PrimaryAction}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+    </ScrollView>
+</ContentPage>

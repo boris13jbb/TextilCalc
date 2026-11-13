@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TextilCalc.App.Views.GramaturaPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:TextilCalc.App.ViewModels"
+    x:DataType="vm:GramaturaViewModel"
+    Title="Cálculo de gramatura">
+    <ScrollView HorizontalOptions="Fill">
+        <VerticalStackLayout
+            Padding="{OnIdiom Phone='18,20,18,38', Tablet='32,28,32,44', Desktop='48,34,48,52'}"
+            Spacing="18"
+            MaximumWidthRequest="820"
+            HorizontalOptions="Fill">
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Cálculo de gramatura" Style="{StaticResource PageTitle}" />
+                <Label
+                    Text="Determina GSM, área y rendimiento a partir de una pieza pesada."
+                    Style="{StaticResource PageSubtitle}" />
+            </VerticalStackLayout>
+
+            <Border Style="{StaticResource TextilCard}">
+                <VerticalStackLayout Spacing="16">
+                    <VerticalStackLayout Spacing="3">
+                        <Label Text="Datos de la pieza" Style="{StaticResource SectionTitle}" />
+                        <Label Text="Todos los valores deben ser mayores que cero." Style="{StaticResource MutedText}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="7">
+                        <Label Text="Metraje de la pieza (m)" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource TextilInput}">
+                            <Entry
+                                Text="{Binding LengthText}"
+                                Keyboard="Numeric"
+                                Placeholder="Ej. 50"
+                                ReturnType="Next"
+                                SemanticProperties.Hint="Ingresa el largo de la pieza en metros" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="7">
+                        <Label Text="Ancho de la pieza (m)" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource TextilInput}">
+                            <Entry
+                                Text="{Binding WidthText}"
+                                Keyboard="Numeric"
+                                Placeholder="Ej. 1,60"
+                                ReturnType="Next"
+                                SemanticProperties.Hint="Ingresa el ancho de la pieza en metros" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="7">
+                        <Label Text="Peso de balanza (kg)" Style="{StaticResource FieldLabel}" />
+                        <Border Style="{StaticResource TextilInput}">
+                            <Entry
+                                Text="{Binding WeightText}"
+                                Keyboard="Numeric"
+                                Placeholder="Ej. 80"
+                                ReturnType="Done"
+                                SemanticProperties.Hint="Ingresa el peso de la pieza en kilogramos" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="2*,*" ColumnSpacing="10">
+                        <Button
+                            Text="Calcular gramatura"
+                            Command="{Binding CalculateCommand}"
+                            Style="{StaticResource PrimaryAction}" />
+                        <Button
+                            Grid.Column="1"
+                            Text="Limpiar"
+                            Command="{Binding ClearCommand}"
+                            Style="{StaticResource SecondaryAction}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border IsVisible="{Binding HasError}" Style="{StaticResource ErrorBanner}">
+                <Label
+                    Text="{Binding Error}"
+                    TextColor="{StaticResource Error}"
+                    FontFamily="OpenSansSemibold"
+                    SemanticProperties.Description="{Binding Error}" />
+            </Border>
+
+            <Border IsVisible="{Binding HasResult}" Style="{StaticResource TextilCard}">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Resultado" Style="{StaticResource SectionTitle}" />
+                    <Border
+                        BackgroundColor="{AppThemeBinding Light={StaticResource PrimarySoft}, Dark={StaticResource PrimarySoftDark}}"
+                        Stroke="{StaticResource Primary}"
+                        StrokeShape="RoundRectangle 14"
+                        Padding="16">
+                        <VerticalStackLayout Spacing="3">
+                            <Label Text="GRAMATURA" Style="{StaticResource MutedText}" CharacterSpacing="1" />
+                            <Label
+                                Text="{Binding GsmDisplay, StringFormat='{}{0} g/m²'}"
+                                FontSize="28"
+                                FontFamily="OpenSansSemibold"
+                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Área total" Style="{StaticResource MutedText}" />
+                            <Label Text="{Binding AreaDisplay, StringFormat='{}{0} m²'}" FontFamily="OpenSansSemibold" FontSize="17" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="Rendimiento" Style="{StaticResource MutedText}" />
+                            <Label Text="{Binding RendimientoDisplay, StringFormat='{}{0} m²/kg'}" FontFamily="OpenSansSemibold" FontSize="17" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border IsVisible="{Binding HasNoResult}" Style="{StaticResource TextilCard}">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Resultado pendiente" Style="{StaticResource SectionTitle}" HorizontalTextAlignment="Center" />
+                    <Label Text="Completa los datos y pulsa «Calcular gramatura»." Style="{StaticResource MutedText}" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Text="Volver" Command="{Binding GoBackCommand}" Style="{StaticResource SecondaryAction}" />
+                <Button Grid.Column="1" Text="Abrir calculadora" Command="{Binding OpenCalculatorCommand}" Style="{StaticResource SecondaryAction}" />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

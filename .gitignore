@@ -1,0 +1,68 @@
+## .NET / MAUI
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.cache
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Visual Studio
+.vs/
+*.rsuser
+*.sln.docstates
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+## Rider
+.idea/
+*.sln.iml
+
+## OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## Publish / packages
+*.nupkg
+*.snupkg
+publish/
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+_pkginfo.txt
+*.appx
+*.appxbundle
+*.appxupload
+
+## Android / keys (never commit secrets)
+*.keystore
+*.jks
+*.p12
+*.pfx
+android_debug_keystore.flag
+
+## Local / tooling
+*.log
+*.tmp
+*.temp
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+.cursor/

@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - feature/textilcalc-refactor-ui-calculadora
+
+# No secretos. No publica instaladores. Builds MAUI no se ejecutan aquí:
+# requieren workloads maui-windows / maui-android y runners preparados;
+# ver DOCUMENTACION/PENDIENTES_VERIFICACION.md.
+
+jobs:
+  core-tests:
+    name: TextilCalc.Core.Tests (.NET 10)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore TextilCalc.Core.Tests/TextilCalc.Core.Tests.csproj
+
+      - name: Test
+        run: >
+          dotnet test TextilCalc.Core.Tests/TextilCalc.Core.Tests.csproj
+          --configuration Release
+          --no-restore
+          --verbosity normal
+          --logger "trx;LogFileName=core-tests.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-test-results
+          path: TextilCalc.Core.Tests/TestResults/**
+          if-no-files-found: ignore

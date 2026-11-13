@@ -55,6 +55,7 @@ if ($LASTEXITCODE -ne 0) {
     throw "La restauración de TextilCalc.Core falló con código $LASTEXITCODE."
 }
 
+# PublishReadyToRun=false: evita NETSDK1094 con restore parcial por TFM en MAUI multi-target.
 dotnet publish $projectPath `
     --framework $targetFramework `
     --configuration Release `
@@ -64,7 +65,7 @@ dotnet publish $projectPath `
     --output $publishDirectory `
     -p:WindowsPackageType=None `
     -p:PublishSingleFile=false `
-    -p:PublishReadyToRun=true
+    -p:PublishReadyToRun=false
 
 if ($LASTEXITCODE -ne 0) {
     throw "La publicación de Windows falló con código $LASTEXITCODE."

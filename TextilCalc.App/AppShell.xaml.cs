@@ -11,7 +11,6 @@ public partial class AppShell : Shell
 
         Routing.RegisterRoute(nameof(GramaturaPage), typeof(GramaturaPage));
         Routing.RegisterRoute(nameof(MetrajePage), typeof(MetrajePage));
-        Routing.RegisterRoute(nameof(TelasPage), typeof(TelasPage));
         Routing.RegisterRoute(nameof(CalculadoraPage), typeof(CalculadoraPage));
     }
 }

@@ -1,15 +1,21 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TextilCalc.App.Services;
 
 namespace TextilCalc.App.ViewModels;
 
-public sealed partial class HomeViewModel
+public sealed partial class HomeViewModel : ObservableObject
 {
     private readonly IUserDialogService _dialogs;
+    private readonly IAppPreferences _preferences;
 
-    public HomeViewModel(IUserDialogService dialogs)
+    [ObservableProperty] public partial string ThemeLabel { get; set; } = "Tema: Sistema";
+
+    public HomeViewModel(IUserDialogService dialogs, IAppPreferences preferences)
     {
         _dialogs = dialogs;
+        _preferences = preferences;
+        ThemeLabel = FormatThemeLabel(preferences.GetThemePreference());
     }
 
     [RelayCommand]
@@ -19,10 +25,22 @@ public sealed partial class HomeViewModel
     private static Task OpenMetrajeAsync() => Shell.Current.GoToAsync(nameof(Views.MetrajePage));
 
     [RelayCommand]
-    private static Task OpenTelasAsync() => Shell.Current.GoToAsync(nameof(Views.TelasPage));
+    private static Task OpenCalculatorAsync() => Shell.Current.GoToAsync(nameof(Views.CalculadoraPage));
 
     [RelayCommand]
-    private static Task OpenCalculatorAsync() => Shell.Current.GoToAsync(nameof(Views.CalculadoraPage));
+    private void CycleTheme()
+    {
+        var next = _preferences.GetThemePreference() switch
+        {
+            "System" => "Light",
+            "Light" => "Dark",
+            _ => "System"
+        };
+
+        _preferences.SetThemePreference(next);
+        App.ApplyTheme(next);
+        ThemeLabel = FormatThemeLabel(next);
+    }
 
     [RelayCommand]
     private async Task ExitAsync()
@@ -44,4 +62,11 @@ public sealed partial class HomeViewModel
             application.CloseWindow(window);
         }
     }
+
+    private static string FormatThemeLabel(string preference) => preference switch
+    {
+        "Light" => "Tema: Claro",
+        "Dark" => "Tema: Oscuro",
+        _ => "Tema: Sistema"
+    };
 }

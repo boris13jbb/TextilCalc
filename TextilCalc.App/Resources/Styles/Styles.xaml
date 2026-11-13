@@ -401,6 +401,7 @@
     -->
 
     <Style TargetType="Page" ApplyToDerivedTypes="True">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}" />
         <Setter Property="Padding" Value="0"/>
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}" />
     </Style>
@@ -439,7 +440,7 @@
 
     <Style x:Key="PageSubtitle" TargetType="Label">
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource Gray300}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextMutedDark}}" />
     </Style>
 
     <Style x:Key="SectionTitle" TargetType="Label">
@@ -468,9 +469,10 @@
     </Style>
 
     <Style x:Key="SecondaryAction" TargetType="Button">
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource PageBackgroundDark}}" />
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        <!-- Oscuro: SurfaceMutedDark evita que el botón se funda con PageBackgroundDark. -->
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceMutedDark}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource AccentPurple}}" />
         <Setter Property="BorderWidth" Value="1" />
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
         <Setter Property="CornerRadius" Value="12" />
@@ -480,8 +482,8 @@
 
     <Style x:Key="DangerAction" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ErrorSoft}, Dark={StaticResource ErrorSoftDark}}" />
-        <Setter Property="TextColor" Value="{StaticResource Error}" />
-        <Setter Property="BorderColor" Value="#FECACA" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Error}, Dark=#FCA5A5}" />
+        <Setter Property="BorderColor" Value="{AppThemeBinding Light=#FECACA, Dark=#7F1D1D}" />
         <Setter Property="BorderWidth" Value="1" />
         <Setter Property="FontFamily" Value="OpenSansSemibold" />
         <Setter Property="FontSize" Value="13" />
@@ -505,7 +507,8 @@
         <Setter Property="Padding" Value="6,1" />
         <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource BorderDark}}" />
         <Setter Property="StrokeShape" Value="RoundRectangle 12" />
-        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource PageBackgroundDark}}" />
+        <!-- Oscuro: SurfaceElevatedDark separa el campo del fondo de página. -->
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceElevatedDark}}" />
         <Setter Property="MinimumHeightRequest" Value="50" />
     </Style>
 
@@ -515,18 +518,23 @@
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="StrokeShape" Value="RoundRectangle 18" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}" />
+        <Setter Property="Shadow">
+            <Setter.Value>
+                <Shadow Brush="#10152F" Offset="0,6" Radius="18" Opacity="0.12" />
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="ErrorBanner" TargetType="Border">
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ErrorSoft}, Dark={StaticResource ErrorSoftDark}}" />
-        <Setter Property="Stroke" Value="#FECACA" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light=#FECACA, Dark=#7F1D1D}" />
         <Setter Property="StrokeShape" Value="RoundRectangle 12" />
         <Setter Property="Padding" Value="14,12" />
     </Style>
 
     <Style x:Key="SuccessBanner" TargetType="Border">
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SuccessSoft}, Dark={StaticResource SuccessSoftDark}}" />
-        <Setter Property="Stroke" Value="#A7F3D0" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light=#A7F3D0, Dark=#166534}" />
         <Setter Property="StrokeShape" Value="RoundRectangle 12" />
         <Setter Property="Padding" Value="14,12" />
     </Style>

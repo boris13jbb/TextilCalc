@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui;
-using CommunityToolkit.Maui.Storage;
 using Microsoft.Extensions.Logging;
 using TextilCalc.App.Services;
 using TextilCalc.App.ViewModels;
@@ -27,10 +26,8 @@ public static class MauiProgram
 #endif
 
         builder.Services.AddSingleton<IAppPreferences, AppPreferences>();
-        builder.Services.AddSingleton<ITelaRepository, TelaRepository>();
-        builder.Services.AddSingleton<IExcelService, ExcelService>();
         builder.Services.AddSingleton<IUserDialogService, UserDialogService>();
-        builder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
+        builder.Services.AddSingleton<ICalculatorHistoryService, CalculatorHistoryService>();
         builder.Services.AddSingleton<ExpressionEvaluator>();
         builder.Services.AddSingleton<NavigationTutorialService>();
 
@@ -38,12 +35,10 @@ public static class MauiProgram
         builder.Services.AddSingleton<GramaturaViewModel>();
         builder.Services.AddSingleton<MetrajeViewModel>();
         builder.Services.AddSingleton<CalculadoraViewModel>();
-        builder.Services.AddTransient<TelasViewModel>();
 
         builder.Services.AddSingleton<HomePage>();
         builder.Services.AddTransient<GramaturaPage>();
         builder.Services.AddTransient<MetrajePage>();
-        builder.Services.AddTransient<TelasPage>();
         builder.Services.AddTransient<CalculadoraPage>();
         builder.Services.AddSingleton<AppShell>();
 

@@ -4,13 +4,15 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:TextilCalc.App.ViewModels"
+    xmlns:models="clr-namespace:TextilCalc.Core.Models;assembly=TextilCalc.Core"
     x:DataType="vm:CalculadoraViewModel"
-    Title="Calculadora">
+    Title="Calculadora"
+    BackgroundColor="{AppThemeBinding Light={StaticResource PageBackground}, Dark={StaticResource PageBackgroundDark}}">
     <ContentPage.Resources>
         <Style x:Key="CalcButton" TargetType="Button">
-            <Setter Property="HeightRequest" Value="{OnIdiom Phone=66, Tablet=60, Desktop=58}" />
+            <Setter Property="HeightRequest" Value="{OnIdiom Phone=62, Tablet=58, Desktop=56}" />
             <Setter Property="Padding" Value="4" />
-            <Setter Property="FontSize" Value="{OnIdiom Phone=20, Tablet=18, Desktop=18}" />
+            <Setter Property="FontSize" Value="{OnIdiom Phone=19, Tablet=17, Desktop=17}" />
             <Setter Property="FontFamily" Value="OpenSansSemibold" />
             <Setter Property="CornerRadius" Value="14" />
             <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceMutedDark}}" />
@@ -19,9 +21,10 @@
             <Setter Property="BorderWidth" Value="1" />
         </Style>
         <Style x:Key="FunctionButton" TargetType="Button" BasedOn="{StaticResource CalcButton}">
-            <Setter Property="BackgroundColor" Value="{StaticResource Secondary}" />
-            <Setter Property="TextColor" Value="White" />
-            <Setter Property="BorderColor" Value="{StaticResource Secondary}" />
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimarySoft}, Dark={StaticResource PanelAccentDark}}" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource AccentPurple}}" />
+            <Setter Property="FontSize" Value="{OnIdiom Phone=15, Tablet=14, Desktop=14}" />
         </Style>
         <Style x:Key="OperatorButton" TargetType="Button" BasedOn="{StaticResource CalcButton}">
             <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
@@ -34,58 +37,43 @@
             <Setter Property="BorderColor" Value="#FECACA" />
         </Style>
         <Style x:Key="ModeButton" TargetType="Button" BasedOn="{StaticResource CalcButton}">
-            <Setter Property="HeightRequest" Value="56" />
-            <Setter Property="FontSize" Value="15" />
+            <Setter Property="HeightRequest" Value="52" />
+            <Setter Property="FontSize" Value="14" />
             <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}" />
             <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
             <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-        </Style>
-        <Style x:Key="AngleButton" TargetType="Button" BasedOn="{StaticResource FunctionButton}">
-            <Setter Property="HeightRequest" Value="56" />
-            <Setter Property="FontSize" Value="16" />
         </Style>
     </ContentPage.Resources>
 
     <ScrollView HorizontalOptions="Fill">
         <VerticalStackLayout
-            Padding="{OnIdiom Phone='16,18,16,28', Tablet='28,24,28,36', Desktop='40,28,40,40'}"
-            Spacing="14"
-            MaximumWidthRequest="580"
+            Padding="{OnIdiom Phone='14,16,14,28', Tablet='28,24,28,36', Desktop='40,28,40,40'}"
+            Spacing="12"
+            MaximumWidthRequest="620"
             HorizontalOptions="Fill">
-            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                <Border
-                    WidthRequest="30"
-                    HeightRequest="30"
-                    BackgroundColor="{StaticResource Primary}"
-                    Stroke="Transparent"
-                    StrokeShape="RoundRectangle 8">
-                    <Label
-                        Text="✣"
-                        TextColor="White"
-                        FontSize="19"
-                        HorizontalTextAlignment="Center"
-                        VerticalTextAlignment="Center" />
-                </Border>
-                <Label
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                <VerticalStackLayout Spacing="2">
+                    <Label Text="Calculadora" Style="{StaticResource PageTitle}" FontSize="{OnIdiom Phone=30, Tablet=32, Desktop=34}" />
+                    <Label Text="Científica · memoria · historial · DEG/RAD/GRAD" Style="{StaticResource PageSubtitle}" />
+                </VerticalStackLayout>
+                <Button
                     Grid.Column="1"
-                    Text="TextilCalc"
-                    FontSize="20"
-                    FontFamily="OpenSansSemibold"
-                    VerticalTextAlignment="Center" />
+                    Text="←"
+                    Command="{Binding GoBackCommand}"
+                    Style="{StaticResource ModeButton}"
+                    WidthRequest="52"
+                    SemanticProperties.Description="Volver al inicio"
+                    VerticalOptions="Start" />
             </Grid>
 
-            <VerticalStackLayout Spacing="3" Margin="0,8,0,2">
-                <Label
-                    Text="Calculadora"
-                    FontSize="{OnIdiom Phone=38, Tablet=36, Desktop=36}"
-                    FontFamily="OpenSansSemibold"
-                    TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource White}}" />
-                <Label Text="Operaciones básicas y científicas con memoria." Style="{StaticResource PageSubtitle}" />
-            </VerticalStackLayout>
-
-            <Border Style="{StaticResource TextilCard}" Padding="18" HeightRequest="{OnIdiom Phone=190, Tablet=170, Desktop=170}">
-                <Grid RowDefinitions="Auto,*,Auto">
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <Border
+                Style="{StaticResource TextilCard}"
+                Padding="16"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Surface}, Dark={StaticResource SurfaceDark}}"
+                MinimumHeightRequest="{OnIdiom Phone=168, Tablet=150, Desktop=150}">
+                <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="6">
+                    <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
                         <Border
                             IsVisible="{Binding HasMemory}"
                             BackgroundColor="{AppThemeBinding Light={StaticResource PrimarySoft}, Dark={StaticResource PrimarySoftDark}}"
@@ -97,25 +85,40 @@
                         </Border>
                         <Border
                             Grid.Column="1"
-                            BackgroundColor="{AppThemeBinding Light=#ECFDF5, Dark={StaticResource SuccessSoftDark}}"
-                            Stroke="#99F6E4"
-                            StrokeShape="RoundRectangle 18"
-                            Padding="13,6">
-                            <Label
-                                Text="{Binding AngleUnit}"
-                                FontFamily="OpenSansSemibold"
-                                FontSize="12"
-                                TextColor="{StaticResource Secondary}" />
+                            BackgroundColor="{AppThemeBinding Light={StaticResource PrimarySoft}, Dark={StaticResource SurfaceElevatedDark}}"
+                            Stroke="Transparent"
+                            StrokeShape="RoundRectangle 14"
+                            Padding="10,5">
+                            <Label Text="{Binding AngleUnitLabel}" FontFamily="OpenSansSemibold" FontSize="12" TextColor="{StaticResource Primary}" />
                         </Border>
+                        <Button
+                            Grid.Column="2"
+                            Text="Historial"
+                            Command="{Binding ApplyFunctionCommand}"
+                            CommandParameter="HISTORY"
+                            Style="{StaticResource ModeButton}"
+                            HeightRequest="36"
+                            FontSize="12"
+                            Padding="10,4"
+                            SemanticProperties.Hint="Mostrar u ocultar el historial" />
                     </Grid>
-                    <Label Grid.Row="1" Text="{Binding PreviousExpression}" HorizontalTextAlignment="End" LineBreakMode="TailTruncation" Style="{StaticResource MutedText}" VerticalTextAlignment="End" />
+
+                    <Label
+                        Grid.Row="1"
+                        Text="{Binding PreviousExpression}"
+                        HorizontalTextAlignment="End"
+                        LineBreakMode="TailTruncation"
+                        Style="{StaticResource MutedText}" />
+
                     <Label
                         Grid.Row="2"
                         Text="{Binding DisplayValue}"
                         HorizontalTextAlignment="End"
-                        FontSize="{OnIdiom Phone=48, Tablet=42, Desktop=42}"
+                        VerticalTextAlignment="End"
+                        FontSize="{OnIdiom Phone=44, Tablet=40, Desktop=40}"
                         FontFamily="OpenSansSemibold"
                         LineBreakMode="TailTruncation"
+                        TextColor="{AppThemeBinding Light={StaticResource TextPrimary}, Dark={StaticResource White}}"
                         SemanticProperties.Description="{Binding DisplayValue}">
                         <Label.Triggers>
                             <DataTrigger TargetType="Label" Binding="{Binding IsError}" Value="True">
@@ -123,27 +126,77 @@
                             </DataTrigger>
                         </Label.Triggers>
                     </Label>
+
+                    <Label
+                        Grid.Row="3"
+                        IsVisible="{Binding IsError}"
+                        Text="{Binding ErrorMessage}"
+                        TextColor="{StaticResource Error}"
+                        FontSize="12"
+                        LineBreakMode="WordWrap"
+                        HorizontalTextAlignment="End" />
+                </Grid>
+            </Border>
+
+            <Border
+                IsVisible="{Binding IsHistoryVisible}"
+                Style="{StaticResource TextilCard}"
+                Padding="12"
+                MaximumHeightRequest="220">
+                <Grid RowDefinitions="Auto,*" RowSpacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Últimas operaciones" Style="{StaticResource SectionTitle}" FontSize="15" />
+                        <Button
+                            Grid.Column="1"
+                            Text="Borrar"
+                            Command="{Binding ClearHistoryCommand}"
+                            Style="{StaticResource DangerAction}"
+                            IsEnabled="{Binding HasHistory}" />
+                    </Grid>
+                    <CollectionView Grid.Row="1" ItemsSource="{Binding History}" SelectionMode="None">
+                        <CollectionView.EmptyView>
+                            <Label Text="Aún no hay operaciones guardadas." Style="{StaticResource MutedText}" Margin="8" />
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:CalculatorHistoryEntry">
+                                <Grid Margin="0,0,0,6">
+                                    <Border Padding="10,8" StrokeThickness="0" BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceMuted}, Dark={StaticResource SurfaceMutedDark}}" StrokeShape="RoundRectangle 10">
+                                        <VerticalStackLayout Spacing="2" InputTransparent="True">
+                                            <Label Text="{Binding Expression}" Style="{StaticResource MutedText}" LineBreakMode="TailTruncation" />
+                                            <Label Text="{Binding Result}" FontFamily="OpenSansSemibold" FontSize="16" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                    <Button
+                                        BackgroundColor="Transparent"
+                                        BorderWidth="0"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CalculadoraViewModel}}, Path=ReuseHistoryCommand}"
+                                        CommandParameter="{Binding .}"
+                                        SemanticProperties.Description="Reutilizar resultado del historial" />
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
                 </Grid>
             </Border>
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                 <Button
-                    Text="{Binding ScientificModeLabel, StringFormat='▦  {0}'}"
+                    Text="{Binding ScientificModeLabel}"
                     Command="{Binding ApplyFunctionCommand}"
                     CommandParameter="TOGGLE"
                     Style="{StaticResource ModeButton}"
                     SemanticProperties.Hint="Muestra u oculta las funciones científicas" />
                 <Button
                     Grid.Column="1"
-                    Text="{Binding AngleUnit, StringFormat='⌾  {0}        ⌄'}"
+                    Text="{Binding AngleUnitLabel, StringFormat='Ángulo: {0}'}"
                     Command="{Binding ApplyFunctionCommand}"
                     CommandParameter="ANGLE"
-                    Style="{StaticResource AngleButton}"
+                    Style="{StaticResource ModeButton}"
                     SemanticProperties.Hint="Cambia la unidad angular" />
             </Grid>
 
-            <VerticalStackLayout IsVisible="{Binding IsExpanded}" Spacing="8">
-                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+            <VerticalStackLayout IsVisible="{Binding IsExpanded}" Spacing="6">
+                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
                     <Button Text="sin" Command="{Binding ApplyFunctionCommand}" CommandParameter="SIN" Style="{StaticResource FunctionButton}" />
                     <Button Grid.Column="1" Text="cos" Command="{Binding ApplyFunctionCommand}" CommandParameter="COS" Style="{StaticResource FunctionButton}" />
                     <Button Grid.Column="2" Text="tan" Command="{Binding ApplyFunctionCommand}" CommandParameter="TAN" Style="{StaticResource FunctionButton}" />
@@ -159,13 +212,13 @@
                     <Button Text="sinh" Command="{Binding ApplyFunctionCommand}" CommandParameter="SINH" Style="{StaticResource FunctionButton}" />
                     <Button Grid.Column="1" Text="cosh" Command="{Binding ApplyFunctionCommand}" CommandParameter="COSH" Style="{StaticResource FunctionButton}" />
                     <Button Grid.Column="2" Text="tanh" Command="{Binding ApplyFunctionCommand}" CommandParameter="TANH" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="3" Text="RND" Command="{Binding ApplyFunctionCommand}" CommandParameter="RND" Style="{StaticResource FunctionButton}" />
+                    <Button Grid.Column="3" Text="abs" Command="{Binding ApplyFunctionCommand}" CommandParameter="ABS" Style="{StaticResource FunctionButton}" />
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
                     <Button Text="log" Command="{Binding ApplyFunctionCommand}" CommandParameter="LOG" Style="{StaticResource FunctionButton}" />
                     <Button Grid.Column="1" Text="ln" Command="{Binding ApplyFunctionCommand}" CommandParameter="LN" Style="{StaticResource FunctionButton}" />
                     <Button Grid.Column="2" Text="log₂" Command="{Binding ApplyFunctionCommand}" CommandParameter="LOG2" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="3" Text="exp" Command="{Binding ApplyFunctionCommand}" CommandParameter="EXP" Style="{StaticResource FunctionButton}" />
+                    <Button Grid.Column="3" Text="eˣ" Command="{Binding ApplyFunctionCommand}" CommandParameter="EPOWER" Style="{StaticResource FunctionButton}" />
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
                     <Button Text="x²" Command="{Binding ApplyFunctionCommand}" CommandParameter="SQUARE" Style="{StaticResource FunctionButton}" />
@@ -176,34 +229,32 @@
                 <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
                     <Button Text="10ˣ" Command="{Binding ApplyFunctionCommand}" CommandParameter="TENPOWER" Style="{StaticResource FunctionButton}" />
                     <Button Grid.Column="1" Text="2ˣ" Command="{Binding ApplyFunctionCommand}" CommandParameter="TWOPOWER" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="2" Text="eˣ" Command="{Binding ApplyFunctionCommand}" CommandParameter="EPOWER" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="3" Text="x^y" Command="{Binding InputCommand}" CommandParameter="^" Style="{StaticResource FunctionButton}" />
+                    <Button Grid.Column="2" Text="xʸ" Command="{Binding InputCommand}" CommandParameter="^" Style="{StaticResource FunctionButton}" />
+                    <Button Grid.Column="3" Text="mod" Command="{Binding InputCommand}" CommandParameter="mod" Style="{StaticResource FunctionButton}" />
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
                     <Button Text="x!" Command="{Binding ApplyFunctionCommand}" CommandParameter="FACTORIAL" Style="{StaticResource FunctionButton}" />
                     <Button Grid.Column="1" Text="1/x" Command="{Binding ApplyFunctionCommand}" CommandParameter="RECIPROCAL" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="2" Text="|x|" Command="{Binding ApplyFunctionCommand}" CommandParameter="ABS" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="3" Text="mod" Command="{Binding InputCommand}" CommandParameter="mod" Style="{StaticResource FunctionButton}" />
+                    <Button Grid.Column="2" Text="⌊x⌋" Command="{Binding ApplyFunctionCommand}" CommandParameter="FLOOR" Style="{StaticResource FunctionButton}" />
+                    <Button Grid.Column="3" Text="⌈x⌉" Command="{Binding ApplyFunctionCommand}" CommandParameter="CEIL" Style="{StaticResource FunctionButton}" />
                 </Grid>
                 <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
-                    <Button Text="⌊x⌋" Command="{Binding ApplyFunctionCommand}" CommandParameter="FLOOR" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="1" Text="⌈x⌉" Command="{Binding ApplyFunctionCommand}" CommandParameter="CEIL" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="2" Text="round" Command="{Binding ApplyFunctionCommand}" CommandParameter="ROUND" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="3" Text="±" Command="{Binding ApplyFunctionCommand}" CommandParameter="SIGN" Style="{StaticResource FunctionButton}" />
+                    <Button Text="round" Command="{Binding ApplyFunctionCommand}" CommandParameter="ROUND" Style="{StaticResource FunctionButton}" />
+                    <Button Grid.Column="1" Text="±" Command="{Binding ApplyFunctionCommand}" CommandParameter="SIGN" Style="{StaticResource FunctionButton}" />
+                    <Button Grid.Column="2" Text="MC" Command="{Binding MemoryCommand}" CommandParameter="MC" Style="{StaticResource FunctionButton}" />
+                    <Button Grid.Column="3" Text="MR" Command="{Binding MemoryCommand}" CommandParameter="MR" Style="{StaticResource FunctionButton}" />
                 </Grid>
-                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="6">
-                    <Button Text="MC" Command="{Binding MemoryCommand}" CommandParameter="MC" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="1" Text="MR" Command="{Binding MemoryCommand}" CommandParameter="MR" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="2" Text="M+" Command="{Binding MemoryCommand}" CommandParameter="M+" Style="{StaticResource FunctionButton}" />
-                    <Button Grid.Column="3" Text="M-" Command="{Binding MemoryCommand}" CommandParameter="M-" Style="{StaticResource FunctionButton}" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="6">
+                    <Button Text="M+" Command="{Binding MemoryCommand}" CommandParameter="M+" Style="{StaticResource FunctionButton}" />
+                    <Button Grid.Column="1" Text="M-" Command="{Binding MemoryCommand}" CommandParameter="M-" Style="{StaticResource FunctionButton}" />
                 </Grid>
             </VerticalStackLayout>
 
-            <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+            <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="7" RowSpacing="7">
                 <Button Text="(" Command="{Binding InputCommand}" CommandParameter="(" Style="{StaticResource CalcButton}" />
                 <Button Grid.Column="1" Text=")" Command="{Binding InputCommand}" CommandParameter=")" Style="{StaticResource CalcButton}" />
-                <Button Grid.Column="2" Text="C" Command="{Binding InputCommand}" CommandParameter="C" Style="{StaticResource ErrorCalcButton}" SemanticProperties.Description="Borrar todo" />
-                <Button Grid.Column="3" Text="⌫" Command="{Binding InputCommand}" CommandParameter="⌫" Style="{StaticResource ErrorCalcButton}" SemanticProperties.Description="Borrar último carácter" />
+                <Button Grid.Column="2" Text="AC" Command="{Binding InputCommand}" CommandParameter="AC" Style="{StaticResource ErrorCalcButton}" SemanticProperties.Description="Borrar todo" />
+                <Button Grid.Column="3" Text="DEL" Command="{Binding InputCommand}" CommandParameter="⌫" Style="{StaticResource ErrorCalcButton}" SemanticProperties.Description="Borrar último carácter" />
 
                 <Button Grid.Row="1" Text="7" Command="{Binding InputCommand}" CommandParameter="7" Style="{StaticResource CalcButton}" />
                 <Button Grid.Row="1" Grid.Column="1" Text="8" Command="{Binding InputCommand}" CommandParameter="8" Style="{StaticResource CalcButton}" />
@@ -222,17 +273,11 @@
 
                 <Button Grid.Row="4" Text="0" Command="{Binding InputCommand}" CommandParameter="0" Style="{StaticResource CalcButton}" />
                 <Button Grid.Row="4" Grid.Column="1" Text="." Command="{Binding InputCommand}" CommandParameter="." Style="{StaticResource CalcButton}" />
-                <Button Grid.Row="4" Grid.Column="2" Text="%" Command="{Binding ApplyFunctionCommand}" CommandParameter="PERCENT" Style="{StaticResource FunctionButton}" />
+                <Button Grid.Row="4" Grid.Column="2" Text="%" Command="{Binding InputCommand}" CommandParameter="%" Style="{StaticResource FunctionButton}" />
                 <Button Grid.Row="4" Grid.Column="3" Text="+" Command="{Binding InputCommand}" CommandParameter="+" Style="{StaticResource OperatorButton}" />
 
-                <Button Grid.Row="5" Grid.ColumnSpan="4" Text="=" Command="{Binding InputCommand}" CommandParameter="=" Style="{StaticResource OperatorButton}" />
+                <Button Grid.Row="5" Grid.ColumnSpan="4" Text="=" Command="{Binding InputCommand}" CommandParameter="=" Style="{StaticResource OperatorButton}" HeightRequest="58" />
             </Grid>
-
-            <Button
-                Text="←  Volver"
-                Command="{Binding GoBackCommand}"
-                Style="{StaticResource ModeButton}"
-                Margin="0,2,0,0" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

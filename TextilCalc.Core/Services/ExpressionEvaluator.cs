@@ -8,6 +8,10 @@ namespace TextilCalc.Core.Services;
 /// </summary>
 public sealed class ExpressionEvaluator
 {
+    /// <summary>
+    /// Precedencia: +− binarios &lt; ×÷ &lt; unarios/+− y ^ (misma prioridad, asociatividad derecha).
+    /// Así -2^2 → -(2^2) = -4 y 2^-3 → 2^(-3) = 0.125.
+    /// </summary>
     private static readonly Dictionary<string, (int Precedence, bool RightAssociative)> Operators = new(StringComparer.Ordinal)
     {
         ["+"] = (1, false),
@@ -15,6 +19,8 @@ public sealed class ExpressionEvaluator
         ["*"] = (2, false),
         ["/"] = (2, false),
         ["mod"] = (2, false),
+        ["u+"] = (3, true),
+        ["u-"] = (3, true),
         ["^"] = (3, true)
     };
 
@@ -80,22 +86,24 @@ public sealed class ExpressionEvaluator
                 continue;
             }
 
-            var unarySign = (current is '+' or '-') &&
-                            (tokens.Count == 0 ||
-                             tokens[^1] == "(" ||
-                             Operators.ContainsKey(tokens[^1]) ||
-                             Functions.Contains(tokens[^1]));
+            // Unario: inicio, tras '(', operador (incl. otro unario) o nombre de función.
+            // No se fusiona con el literal para respetar -2^2 = -(2^2).
+            var isUnarySign = (current is '+' or '-') &&
+                              (tokens.Count == 0 ||
+                               tokens[^1] == "(" ||
+                               Operators.ContainsKey(tokens[^1]) ||
+                               Functions.Contains(tokens[^1]));
 
-            if (char.IsDigit(current) || current == '.' || unarySign)
+            if (isUnarySign)
+            {
+                tokens.Add(current == '-' ? "u-" : "u+");
+                index++;
+                continue;
+            }
+
+            if (char.IsDigit(current) || current == '.')
             {
                 var start = index++;
-                var hasDigit = !unarySign || (index < expression.Length && (char.IsDigit(expression[index]) || expression[index] == '.'));
-                if (!hasDigit && unarySign)
-                {
-                    // Signo unario suelto: se trata como operador.
-                    tokens.Add(current.ToString());
-                    continue;
-                }
 
                 while (index < expression.Length &&
                        (char.IsDigit(expression[index]) || expression[index] == '.'))
@@ -127,8 +135,7 @@ public sealed class ExpressionEvaluator
                 }
 
                 var number = expression[start..index];
-                if (number is "+" or "-" ||
-                    !double.TryParse(number, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+                if (!double.TryParse(number, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
                 {
                     throw new FormatException($"Número inválido: {number}");
                 }
@@ -290,6 +297,18 @@ public sealed class ExpressionEvaluator
                 }
 
                 values.Push(EvaluateFunction(token, values.Pop()));
+                continue;
+            }
+
+            if (token is "u+" or "u-")
+            {
+                if (values.Count < 1)
+                {
+                    throw new FormatException("La expresión está incompleta.");
+                }
+
+                var operand = values.Pop();
+                values.Push(token == "u-" ? -operand : operand);
                 continue;
             }
 

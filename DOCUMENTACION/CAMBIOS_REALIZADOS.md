@@ -69,7 +69,7 @@ Correcciones aplicadas en la pasada funcional:
 
 ## Ajuste puntual logo + resultados (2026-11-12)
 
-- Logo **VICUNHA jeansidentity**: `Resources/Images/vicunha_logo.png` (PNG HD transparente) usado en `HomePage.xaml` sobre fondo `#10152F` para contraste en claro/oscuro. El SVG queda en la raíz del repo (`vicunha_jeansidentity_transparente.svg`); no se incluye en `Resources/Images` junto al PNG porque Resizetizer exige nombres de salida únicos y MAUI no renderiza SVG de forma fiable en `Image` en todas las plataformas.
+- Logo **VICUNHA jeansidentity**: `Resources/Images/vicunha_logo.png` (PNG HD transparente) usado en `HomePage.xaml` sobre fondo `#10152F` para contraste en claro/oscuro. Los SVG/PNG de referencia están en `DOCUMENTACION/branding/`; no se incluyen en `Resources/Images` junto al PNG de app porque Resizetizer exige nombres de salida únicos y MAUI no renderiza SVG de forma fiable en `Image` en todas las plataformas.
 - **Gramatura UI**: se eliminaron de la presentación «Área total» y «Rendimiento»; solo se muestra `GRAMATURA` con formato `N2` (`GsmDisplay`). Cálculos internos de área/rendimiento intactos en Core/VM.
 - **Metraje UI**: se eliminó «Área total» de la presentación; solo `METRAJE DISPONIBLE` (`N2`). `AreaM2` sigue calculándose internamente.
 - Textos de Inicio/subtítulos y `MANUAL_USUARIO.md` alineados con la UI.

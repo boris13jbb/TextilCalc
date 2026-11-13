@@ -65,7 +65,7 @@ Para smoke en dispositivo usar build con `-p:EmbedAssembliesIntoApk=true` (o Rel
 |------|----------------------|
 | Gramatura | Solo **GRAMATURA: 388.89 g/m²** |
 | Metraje | Solo **METRAJE DISPONIBLE: 250.00 metros** |
-| Logo | `Resources/Images/vicunha_logo.png` (= fuente `vicunha_jeansidentity_transparente_HD.png`) |
+| Logo | `Resources/Images/vicunha_logo.png` (= fuente `DOCUMENTACION/branding/vicunha_jeansidentity_transparente_HD.png`) |
 
 ### Git
 

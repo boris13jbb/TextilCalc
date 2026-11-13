@@ -85,3 +85,5 @@ coverage/
 *.coveragexml
 .cursor/
 DOCUMENTACION/capturas/_*.xml
+DOCUMENTACION/_*.xml
+DOCUMENTACION/_val-*.xml

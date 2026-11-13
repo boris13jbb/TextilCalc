@@ -6,7 +6,7 @@ Aplicación multiplataforma para Android y Windows orientada a cálculos textile
 
 - Cálculo de **gramatura** (resultado principal GSM en g/m²) con entrada manual.
 - Cálculo de **metraje** (metros lineales disponibles) con entrada manual.
-- Marca **VICUNHA jeansidentity** en Inicio (`vicunha_logo.png` por compatibilidad MAUI; SVG de referencia en la raíz del repo).
+- Marca **VICUNHA jeansidentity** en Inicio (`vicunha_logo.png` por compatibilidad MAUI; logos de referencia en `DOCUMENTACION/branding/`).
 - **Calculadora científica** con memoria, historial persistente, DEG/RAD/GRAD y teclado físico.
 - Persistencia local de formularios, estado de la calculadora e historial.
 - Tema claro / oscuro / sistema.
@@ -43,6 +43,14 @@ Si faltan cargas de trabajo:
 ```powershell
 dotnet workload restore TextilCalc.App\TextilCalc.App.csproj
 ```
+
+## CI (GitHub Actions)
+
+- Workflow: `.github/workflows/ci.yml`
+- Trigger: `pull_request` hacia `main` (y push a la rama feature documentada)
+- Ejecuta tests de `TextilCalc.Core.Tests` con .NET 10
+- No publica instaladores ni usa secretos
+- Builds MAUI Windows/Android: solo locales mientras no haya runners MAUI reproducibles (ver `DOCUMENTACION/PENDIENTES_VERIFICACION.md`)
 
 ## Instalador de Windows
 

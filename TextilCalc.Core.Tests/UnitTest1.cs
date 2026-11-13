@@ -73,6 +73,33 @@ public sealed class ExpressionEvaluatorTests
         Assert.Equal(expected, _evaluator.Evaluate(expression), 10);
     }
 
+    /// <summary>
+    /// Unarios: -(…), -función, 2×(-3), 2^(-3), (-2)^2 y -2^2 (potencia sobre negación).
+    /// </summary>
+    [Theory]
+    [InlineData("-(2+3)", -5)]
+    [InlineData("2×(-3)", -6)]
+    [InlineData("2*(-3)", -6)]
+    [InlineData("2^(-3)", 0.125)]
+    [InlineData("2^-3", 0.125)]
+    [InlineData("(-2)^2", 4)]
+    [InlineData("-2^2", -4)]
+    [InlineData("--2", 2)]
+    [InlineData("-2*3", -6)]
+    [InlineData("2*-3", -6)]
+    public void ExpressionEvaluator_UnaryOperators(string expression, double expected)
+    {
+        Assert.Equal(expected, _evaluator.Evaluate(expression), 10);
+    }
+
+    [Fact]
+    public void ExpressionEvaluator_UnaryNegatesSinInDegrees()
+    {
+        _evaluator.AngleMode = AngleUnit.Degrees;
+        Assert.Equal(-0.5, _evaluator.Evaluate("-sin(30)"), 10);
+        Assert.Equal(-0.5, _evaluator.Evaluate("sin(-30)"), 10);
+    }
+
     [Theory]
     [InlineData("pi", Math.PI)]
     [InlineData("e", Math.E)]
